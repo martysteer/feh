@@ -498,6 +498,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.transition = TRANSITION_FADE;
 			else if (!strcmp(optarg, "slide"))
 				opt.transition = TRANSITION_SLIDE;
+			else if (!strcmp(optarg, "glitch"))
+				opt.transition = TRANSITION_GLITCH;
 			else {
 				weprintf("Unrecognized transition type: %s", optarg);
 				opt.transition = TRANSITION_NONE;

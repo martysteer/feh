@@ -29,7 +29,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 enum transition_type {
     TRANSITION_NONE = 0,
     TRANSITION_FADE,
-    TRANSITION_SLIDE
+    TRANSITION_SLIDE,
+    TRANSITION_GLITCH
 };
 
 /* Forward declare winwidget to avoid circular dependency */

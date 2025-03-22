@@ -49,6 +49,8 @@ int feh_transition_step(winwidget winwid) {
         return feh_transition_step_fade(winwid);
     else if (winwid->transition_type == TRANSITION_SLIDE)
         return feh_transition_step_slide(winwid);
+    else if (winwid->transition_type == TRANSITION_GLITCH)
+        return feh_transition_step_glitch(winwid);
     
     /* Unknown transition, cancel */
     winwid->in_transition = 0;
