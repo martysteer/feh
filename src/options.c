@@ -55,6 +55,8 @@ void init_parse_options(int argc, char **argv)
 	opt.aspect = 1;
 	opt.slideshow_delay = 0.0;
 	opt.transition = TRANSITION_NONE;
+	opt.transition_steps = 10;           /* Default: 3 transition steps */
+	opt.transition_duration = 3.0;      /* Default (double): 3.0 seconds total */
 	opt.conversion_timeout = -1;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
@@ -343,6 +345,8 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"fontpath"      , 1, 0, OPTION_fontpath},
 		{"slideshow-delay",1, 0, OPTION_slideshow_delay},
 		{"transition"    , 1, 0, OPTION_transition},
+		{"transition-steps"  , 1, 0, OPTION_transition_steps},
+		{"transition-duration"  , 1, 0, OPTION_transition_duration},
 		{"thumb-height"  , 1, 0, OPTION_thumb_height},
 		{"full-screen"   , 0, 0, OPTION_fullscreen}, /* deprecated */
 		{"fullscreen"    , 0, 0, OPTION_fullscreen},
@@ -498,6 +502,16 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				weprintf("Unrecognized transition type: %s", optarg);
 				opt.transition = TRANSITION_NONE;
 			}
+			break;
+		case OPTION_transition_steps:
+			opt.transition_steps = atoi(optarg);
+			if (opt.transition_steps < 2)
+				opt.transition_steps = 2;
+			break;
+		case OPTION_transition_duration:
+			opt.transition_duration = atof(optarg);
+			if (opt.transition_duration < 0.1)
+				opt.transition_duration = 0.1;
 			break;
 		case OPTION_thumb_height:
 			opt.thumb_h = atoi(optarg);

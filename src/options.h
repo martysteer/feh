@@ -47,7 +47,9 @@ struct __fehoptions {
 	unsigned char index;
 	unsigned char thumbs;
 	unsigned char slideshow;
-	unsigned char transition;
+	unsigned char transition;          /* Select transition animations */
+	unsigned int transition_steps;     /* Number of steps in transition animation */
+	double transition_duration;        /* Total duration of transition in seconds */
 	unsigned char recursive;
 	unsigned char output;
 	unsigned char verbose;
@@ -266,6 +268,8 @@ OPTION_class,
 OPTION_no_conversion_cache,
 OPTION_window_id,
 OPTION_transition,
+OPTION_transition_steps,
+OPTION_transition_duration,
 };
 
 //typedef enum __fehoption fehoption;

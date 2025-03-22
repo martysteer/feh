@@ -79,8 +79,8 @@ int feh_transition_step_fade(winwidget winwid) {
         return 0;
     }
     
-    /* Calculate blend factor (1/4, 2/4, 3/4) */
-    blend_factor = (winwid->transition_step + 1) / 4.0;
+    /* Calculate blend factor */
+    blend_factor = (winwid->transition_step + 1.0) / opt.transition_steps;
     
     /* Create temporary transition image */
     trans_im = imlib_create_image(w, h);
@@ -135,7 +135,7 @@ int feh_transition_step_fade(winwidget winwid) {
     winwid->transition_step++;
     
     /* Check if transition is complete */
-    if (winwid->transition_step >= 3) {
+    if (winwid->transition_step >= opt.transition_steps - 1) {
         /* Clean up */
         gib_imlib_free_image_and_decache(winwid->old_im);
         winwid->old_im = NULL;
@@ -172,7 +172,7 @@ int feh_transition_step_slide(winwidget winwid) {
     }
     
     /* Calculate slide offset for current frame */
-    offset = (w * (winwid->transition_step + 1)) / 4;
+    offset = (w * (winwid->transition_step + 1)) / opt.transition_steps;
     
     /* Create temporary transition image */
     trans_im = imlib_create_image(w, h);
@@ -225,7 +225,7 @@ int feh_transition_step_slide(winwidget winwid) {
     winwid->transition_step++;
     
     /* Check if transition is complete */
-    if (winwid->transition_step >= 3) {
+    if (winwid->transition_step >= opt.transition_steps - 1) {
         /* Clean up */
         gib_imlib_free_image_and_decache(winwid->old_im);
         winwid->old_im = NULL;

@@ -132,9 +132,10 @@ void cb_slide_timer(void *data)
     if (winwid->in_transition) {
         int continue_transition = feh_transition_step(winwid);
         
-        /* If transition continues, set timer for next step (100ms per frame) */
+        /* If transition continues, calculate frame duration and set timer */
         if (continue_transition) {
-            feh_add_timer(cb_slide_timer, winwid, 0.1, "TRANSITION");
+            double frame_duration = opt.transition_duration / opt.transition_steps;
+            feh_add_timer(cb_slide_timer, winwid, frame_duration, "TRANSITION");
             return;
         } else {
             /* Transition completed, set up the normal delay timer for next image */
