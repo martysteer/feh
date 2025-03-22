@@ -32,8 +32,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 # include <X11/X.h>
 # include <X11/Xproto.h>
 
-/* Include transitions.h for transition types enum */
-#include "transitions.h"
+# include "transitions.h"  /* Include transitions.h for enum transition_type */
 
 /* Motif window hints */
 #define MWM_HINTS_FUNCTIONS     (1L << 0)
