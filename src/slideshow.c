@@ -126,8 +126,24 @@ void init_slideshow_mode(void)
 
 void cb_slide_timer(void *data)
 {
-	slideshow_change_image((winwidget) data, SLIDE_NEXT, 1);
-	return;
+    winwidget winwid = (winwidget) data;
+    
+    /* If in transition, continue transition */
+    if (winwid->in_transition) {
+        int continue_transition = feh_transition_step(winwid);
+        
+        /* If transition continues, set timer for next step (100ms per frame) */
+        if (continue_transition) {
+            feh_add_timer(cb_slide_timer, winwid, 0.1, "TRANSITION");
+            return;
+        }
+    }
+    
+    /* If not in transition or transition complete, proceed with next image */
+    if (opt.slideshow_delay > 0.0)
+        feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
+    
+    slideshow_change_image(winwid, SLIDE_NEXT, 1);
 }
 
 void cb_reload_timer(void *data)
