@@ -136,13 +136,15 @@ void cb_slide_timer(void *data)
         if (continue_transition) {
             feh_add_timer(cb_slide_timer, winwid, 0.1, "TRANSITION");
             return;
+        } else {
+            /* Transition completed, set up the normal delay timer for next image */
+            if (opt.slideshow_delay > 0.0)
+                feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
+            return; /* Don't advance to next image yet */
         }
     }
     
-    /* If not in transition or transition complete, proceed with next image */
-    if (opt.slideshow_delay > 0.0)
-        feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
-    
+    /* Not in transition - time to advance to next image */
     slideshow_change_image(winwid, SLIDE_NEXT, 1);
 }
 
@@ -236,9 +238,6 @@ void slideshow_change_image(winwidget winwid, int change, int render)
             winwid->transition_step = 0;
         }
     }
-
-	if (opt.slideshow_delay > 0.0)
-		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
 
 	/* Without this, clicking a one-image slideshow reloads it. Not very *
 	   intelligent behaviour :-) */
@@ -398,11 +397,15 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 		eprintf("No more slides in show");
     
 	/* If in transition, start transition timer */
-    if (winwid->in_transition && render) {
-        feh_add_timer(cb_slide_timer, winwid, 0.1, "TRANSITION");
-        return;
-    }
-	
+	if (winwid->in_transition && render) {
+		/* Cancel any existing slideshow delay timer to avoid multiple timers */
+		feh_remove_timer_by_data(winwid);
+		
+		/* Start the transition timer */
+		feh_add_timer(cb_slide_timer, winwid, 0.1, "TRANSITION");
+		return;
+	}
+
 	return;
 }
 
