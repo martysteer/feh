@@ -23,7 +23,8 @@ TARGETS = \
 	timers.c \
 	utils.c \
 	wallpaper.c \
-	winwidget.c
+	winwidget.c \
+	transitions.c
 
 ifeq (${exif},1)
 	TARGETS += \

@@ -117,6 +117,12 @@ struct __winwidget {
 
 	unsigned char has_rotated;
 
+	/* transition state for slideshow effects */
+	unsigned char in_transition;
+	enum transition_type transition_type;
+	int transition_step;
+	Imlib_Image old_im;
+	
 #ifdef HAVE_INOTIFY
 	int inotify_wd;
 #endif
