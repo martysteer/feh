@@ -59,11 +59,90 @@ int feh_transition_step(winwidget winwid) {
 
 /* Empty placeholder implementations - we'll implement these in later steps */
 int feh_transition_step_fade(winwidget winwid) {
-    /* This will be implemented in step 3 */
-    return 0;
+    float blend_factor;
+    Imlib_Image trans_im;
+    
+    /* Calculate dimensions */
+    int old_w = gib_imlib_image_get_width(winwid->old_im);
+    int old_h = gib_imlib_image_get_height(winwid->old_im);
+    int new_w = gib_imlib_image_get_width(winwid->im);
+    int new_h = gib_imlib_image_get_height(winwid->im);
+    int w = winwid->w;
+    int h = winwid->h;
+    
+    /* Validate dimensions */
+    if (w <= 0 || h <= 0) {
+        /* Invalid size, cancel transition */
+        winwid->in_transition = 0;
+        gib_imlib_free_image_and_decache(winwid->old_im);
+        winwid->old_im = NULL;
+        return 0;
+    }
+    
+    /* Calculate blend factor (1/4, 2/4, 3/4) */
+    blend_factor = (winwid->transition_step + 1) / 4.0;
+    
+    /* Create temporary transition image */
+    trans_im = imlib_create_image(w, h);
+    if (!trans_im) {
+        /* Failed to create image, cancel transition */
+        winwid->in_transition = 0;
+        gib_imlib_free_image_and_decache(winwid->old_im);
+        winwid->old_im = NULL;
+        return 0;
+    }
+    
+    /* Clear image to prevent artifacts */
+    gib_imlib_image_fill_rectangle(trans_im, 0, 0, w, h, 0, 0, 0, 255);
+    
+    /* Calculate positions to center images */
+    int old_x = (w - old_w) / 2;
+    int old_y = (h - old_h) / 2;
+    int new_x = (w - new_w) / 2;
+    int new_y = (h - new_h) / 2;
+    
+    /* Blend old image with decreasing opacity */
+    gib_imlib_blend_image_onto_image(trans_im, winwid->old_im, 0, 
+            0, 0, old_w, old_h, 
+            old_x, old_y, old_w, old_h, 
+            1, 1, 0);
+    
+    /* Blend new image with increasing opacity */
+    gib_imlib_blend_image_onto_image(trans_im, winwid->im, 0, 
+            0, 0, new_w, new_h, 
+            new_x, new_y, new_w, new_h, 
+            blend_factor, 1, 0);
+    
+    /* Display the transition frame */
+    imlib_context_set_image(trans_im);
+    gib_imlib_render_image_on_drawable(winwid->bg_pmap, trans_im, 0, 0, 1, 1, 0);
+    XSetWindowBackgroundPixmap(disp, winwid->win, winwid->bg_pmap);
+    XClearWindow(disp, winwid->win);
+    
+    /* Free temporary image */
+    gib_imlib_free_image_and_decache(trans_im);
+    
+    /* Increment step counter */
+    winwid->transition_step++;
+    
+    /* Check if transition is complete */
+    if (winwid->transition_step >= 3) {
+        /* Clean up */
+        gib_imlib_free_image_and_decache(winwid->old_im);
+        winwid->old_im = NULL;
+        winwid->in_transition = 0;
+        winwid->transition_step = 0;
+        
+        /* Render the final state */
+        winwidget_render_image(winwid, 0, 0);
+        return 0; /* Transition complete */
+    }
+    
+    return 1; /* Continue transition */
 }
 
 int feh_transition_step_slide(winwidget winwid) {
     /* This will be implemented in step 4 */
     return 0;
 }
+
