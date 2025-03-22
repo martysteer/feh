@@ -112,7 +112,16 @@ int feh_transition_step_fade(winwidget winwid) {
             0, 0, new_w, new_h, 
             new_x, new_y, new_w, new_h, 
             blend_factor, 1, 0);
+
+    /* Draw a 20x20 colored square at top-right corner */
+    /* Generate random RGB values */
+    int r = random() % 256;
+    int g = random() % 256;
+    int b = random() % 256;
     
+    /* Draw filled square at top-right (w-20, 0) */
+    gib_imlib_image_fill_rectangle(trans_im, w - 20, 0, 20, 20, r, g, b, 255);
+
     /* Display the transition frame */
     imlib_context_set_image(trans_im);
     gib_imlib_render_image_on_drawable(winwid->bg_pmap, trans_im, 0, 0, 1, 1, 0);
@@ -193,7 +202,16 @@ int feh_transition_step_slide(winwidget winwid) {
             0, 0, new_w, new_h,
             w - offset, new_y, new_w, new_h,
             1, 1, 0);
+
+    /* Draw a 20x20 colored square at top-right corner */
+    /* Generate random RGB values */
+    int r = random() % 256;
+    int g = random() % 256;
+    int b = random() % 256;
     
+    /* Draw filled square at top-right (w-20, 0) */
+    gib_imlib_image_fill_rectangle(trans_im, w - 20, 0, 20, 20, r, g, b, 255);
+
     /* Display the transition frame */
     imlib_context_set_image(trans_im);
     gib_imlib_render_image_on_drawable(winwid->bg_pmap, trans_im, 0, 0, 1, 1, 0);
