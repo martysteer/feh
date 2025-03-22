@@ -27,6 +27,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
+/* Include transitions.h for transition_type enum */
+#include "transitions.h"
+
 enum on_last_slide_action {
 	ON_LAST_SLIDE_RESUME = 0,
 	ON_LAST_SLIDE_QUIT,

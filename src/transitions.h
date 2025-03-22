@@ -1,6 +1,6 @@
 /* transitions.h
 
-Copyright (C)......
+Copyright (C) 2025 Your Name Here.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to
@@ -26,15 +26,25 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef TRANSITIONS_H
 #define TRANSITIONS_H
 
+#include "feh.h"
 #include "winwidget.h"
 
-/* Process a transition frame 
- * Returns 1 if transition should continue, 0 if complete
- */
-int feh_transition_step(winwidget winwid);
+/* Transition types enum - This needs to be here rather than options.h 
+   so it can be included by both options.h and winwidget.h */
+enum transition_type {
+    TRANSITION_NONE = 0,
+    TRANSITION_FADE,
+    TRANSITION_SLIDE
+};
 
-/* Specific transition functions */
-int feh_transition_step_fade(winwidget winwid);
-int feh_transition_step_slide(winwidget winwid);
+/* Initialize transition for a window */
+void feh_transition_init(winwidget winwid);
+
+/* Process a single transition step */
+int feh_transition_process(winwidget winwid);
+
+/* Clean up transition resources */
+void feh_transition_cleanup(winwidget winwid);
 
 #endif /* TRANSITIONS_H */
+
