@@ -54,6 +54,7 @@ void init_parse_options(int argc, char **argv)
 	opt.display = 1;
 	opt.aspect = 1;
 	opt.slideshow_delay = 0.0;
+	opt.transition = TRANSITION_NONE;
 	opt.conversion_timeout = -1;
 	opt.thumb_w = 60;
 	opt.thumb_h = 60;
@@ -341,6 +342,7 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 		{"image-bg"      , 1, 0, OPTION_image_bg},
 		{"fontpath"      , 1, 0, OPTION_fontpath},
 		{"slideshow-delay",1, 0, OPTION_slideshow_delay},
+		{"transition"    , 1, 0, OPTION_transition},
 		{"thumb-height"  , 1, 0, OPTION_thumb_height},
 		{"full-screen"   , 0, 0, OPTION_fullscreen}, /* deprecated */
 		{"fullscreen"    , 0, 0, OPTION_fullscreen},
@@ -485,6 +487,16 @@ static void feh_parse_option_array(int argc, char **argv, int finalrun)
 				opt.paused = 1;
 			} else {
 				opt.paused = 0;
+			}
+			break;
+		case OPTION_transition:
+			if (!strcmp(optarg, "fade"))
+				opt.transition = TRANSITION_FADE;
+			else if (!strcmp(optarg, "slide"))
+				opt.transition = TRANSITION_SLIDE;
+			else {
+				weprintf("Unrecognized transition type: %s", optarg);
+				opt.transition = TRANSITION_NONE;
 			}
 			break;
 		case OPTION_thumb_height:

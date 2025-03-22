@@ -33,12 +33,19 @@ enum on_last_slide_action {
 	ON_LAST_SLIDE_HOLD
 };
 
+enum transition_type {
+    TRANSITION_NONE = 0,
+    TRANSITION_FADE,
+    TRANSITION_SLIDE
+};
+
 struct __fehoptions {
 	unsigned char multiwindow;
 	unsigned char montage;
 	unsigned char index;
 	unsigned char thumbs;
 	unsigned char slideshow;
+	unsigned char transition;
 	unsigned char recursive;
 	unsigned char output;
 	unsigned char verbose;
@@ -256,6 +263,7 @@ OPTION_auto_reload,
 OPTION_class,
 OPTION_no_conversion_cache,
 OPTION_window_id,
+OPTION_transition,
 };
 
 //typedef enum __fehoption fehoption;
