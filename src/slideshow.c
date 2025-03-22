@@ -209,14 +209,33 @@ void cb_reload_timer(void *data)
 
 void slideshow_change_image(winwidget winwid, int change, int render)
 {
-	gib_list *last = NULL;
-	gib_list *previous_file = current_file;
-	int i = 0;
-	int jmp = 1;
-	/* We can't use filelist_len in the for loop, since that changes when we
-	 * encounter invalid images.
-	 */
-	int our_filelist_len = filelist_len;
+    gib_list *last = NULL;
+    gib_list *previous_file = current_file;
+    int i = 0;
+    int jmp = 1;
+    int our_filelist_len = filelist_len;
+	
+    /* If in transition, cancel it */
+    if (winwid->in_transition) {
+        if (winwid->old_im) {
+            gib_imlib_free_image_and_decache(winwid->old_im);
+            winwid->old_im = NULL;
+        }
+        winwid->in_transition = 0;
+        winwid->transition_step = 0;
+    }
+    
+    /* Save old image for transition if enabled and appropriate */
+    if (opt.transition != TRANSITION_NONE && render && winwid->im && !opt.paused) {
+        /* Clone old image */
+        winwid->old_im = gib_imlib_clone_image(winwid->im);
+        if (winwid->old_im) {
+            /* Set transition parameters */
+            winwid->in_transition = 1;
+            winwid->transition_type = opt.transition;
+            winwid->transition_step = 0;
+        }
+    }
 
 	if (opt.slideshow_delay > 0.0)
 		feh_add_timer(cb_slide_timer, winwid, opt.slideshow_delay, "SLIDE_CHANGE");
@@ -377,7 +396,13 @@ void slideshow_change_image(winwidget winwid, int change, int render)
 
 	if (filelist_len == 0)
 		eprintf("No more slides in show");
-
+    
+	/* If in transition, start transition timer */
+    if (winwid->in_transition && render) {
+        feh_add_timer(cb_slide_timer, winwid, 0.1, "TRANSITION");
+        return;
+    }
+	
 	return;
 }
 
